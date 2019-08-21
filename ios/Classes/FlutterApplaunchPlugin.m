@@ -44,24 +44,37 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     if (sourceApplication) {
         [scheme setObject:[NSString stringWithFormat:@"%@", sourceApplication] forKey:@"source"];
     }
-    _launchUrlScheme = [[NSDictionary alloc] initWithDictionary:scheme];
-    return YES;
+    if ([scheme.allKeys containsObject:@"url"] && [scheme[@"url"] containsString:@"qindao2846"]) {
+        _launchUrlScheme = [[NSDictionary alloc] initWithDictionary:scheme];
+        return YES;
+    }
+    return false;
+    
 }
 
 -(BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
-    _launchUrlScheme = [[NSDictionary alloc] initWithObjectsAndKeys:url.absoluteString, @"url", nil];
-    return YES;
+ NSMutableDictionary* scheme = [[NSMutableDictionary alloc] initWithObjectsAndKeys:url.absoluteString, @"url", nil];
+    if ([scheme[@"url"] containsString:@"qindao2846"]) {
+        _launchUrlScheme = [[NSDictionary alloc] initWithObjectsAndKeys:url.absoluteString, @"url", nil];
+        return YES;
+    }
+    return false;
+    
 }
 
 -(BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
     NSMutableDictionary* scheme = [[NSMutableDictionary alloc] initWithObjectsAndKeys:url.absoluteString, @"url", nil];
-    if (@available(iOS 9.0, *)) {
-        NSString *sourceApplication = [options objectForKey:UIApplicationOpenURLOptionsSourceApplicationKey];
-        if (sourceApplication) {
-            [scheme setObject:[NSString stringWithFormat:@"%@", sourceApplication] forKey:@"source"];
+    if ([scheme[@"url"] containsString:@"qindao2846"]) {
+        if (@available(iOS 9.0, *)) {
+            NSString *sourceApplication = [options objectForKey:UIApplicationOpenURLOptionsSourceApplicationKey];
+            if (sourceApplication) {
+                [scheme setObject:[NSString stringWithFormat:@"%@", sourceApplication] forKey:@"source"];
+            }
         }
+        _launchUrlScheme = [[NSDictionary alloc] initWithDictionary:scheme];
+        return YES;
     }
-    _launchUrlScheme = [[NSDictionary alloc] initWithDictionary:scheme];
-    return YES;
+    return false;
+
 }
 @end
